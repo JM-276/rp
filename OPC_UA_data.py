@@ -6,7 +6,7 @@ from asyncua import Client
 from asyncua.ua import NodeId
 
 # Configuration
-SERVER_URL = "opc.tcp://Junmin:53530/OPCUA/SimulationServer --- urn:Junmin:OPCUA:SimulationServer"
+SERVER_URL = "opc.tcp://Junmin:53530/OPCUA/SimulationServer"
 
 GOOD_PIECES_NODE_ID = "ns=3;i=1010"
 
