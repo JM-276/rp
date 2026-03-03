@@ -5,7 +5,7 @@ from asyncua import Client
 from asyncua.ua import NodeClass
 
 # Configuration
-SERVER_URL = "opc.tcp://Junmin:53530/OPCUA/SimulationServer"
+SERVER_URL = "opc.tcp://SiemensWOproduction:53530/OPCUA/SimulationServer "
 FOLDER_NODE_ID = "ns=3;i=1001"  # Change this to your folder's node ID
 
 class OPCUA_DataClient:
