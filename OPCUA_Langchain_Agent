@@ -1,0 +1,37 @@
+from langchain.agents import initialize_agent
+from langchain.agents import AgentType
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import SystemMessage
+from opcua_tool import opcua_folder_reader
+
+llm_model = "gpt-4o"
+
+llm = ChatOpenAI(temperature=0, model=llm_model)
+
+tools = [opcua_folder_reader]
+
+system_message = SystemMessage(content="""
+You are an industrial automation assistant with access to a live OPC-UA server.
+
+When answering questions:
+- Always call the opcua_folder_reader tool to fetch live data before answering.
+- Never guess or assume values — only report what the tool returns.
+- Interpret values clearly, labelling engineering units where obvious (e.g. temperature, pressure, speed).
+- If a variable or node is not found, say so clearly.
+- Summarise data in plain English unless the user asks for raw values.
+""")
+
+agent = initialize_agent(
+    tools,
+    llm,
+    agent=AgentType.OPENAI_FUNCTIONS,
+    handle_parsing_errors=True,
+    verbose=True,
+    agent_kwargs={"system_message": system_message}
+)
+
+agent("What variables are available on the OPC-UA server and what are their current values?")
+
+question = "Is there anything that looks like a temperature reading on the OPC-UA server, \
+and if so what is its current value?"
+result = agent(question)
