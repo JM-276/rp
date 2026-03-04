@@ -1,5 +1,4 @@
-from langchain.agents import initialize_agent
-from langchain.agents import AgentType
+from langchain.agents import initialize_agent, AgentType
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage
 from opcua_tool import opcua_folder_reader
@@ -7,8 +6,6 @@ from opcua_tool import opcua_folder_reader
 llm_model = "gpt-4o"
 
 llm = ChatOpenAI(temperature=0, model=llm_model)
-
-tools = [opcua_folder_reader]
 
 system_message = SystemMessage(content="""
 You are an industrial automation assistant with access to a live OPC-UA server.
@@ -22,7 +19,7 @@ When answering questions:
 """)
 
 agent = initialize_agent(
-    tools,
+    [opcua_folder_reader],
     llm,
     agent=AgentType.OPENAI_FUNCTIONS,
     handle_parsing_errors=True,
@@ -30,8 +27,13 @@ agent = initialize_agent(
     agent_kwargs={"system_message": system_message}
 )
 
-agent("What variables are available on the OPC-UA server and what are their current values?")
+try:
+    result = agent("What variables are available on the OPC-UA server and what are their current values?")
+except:
+    print("exception on external access")
 
-question = "Is there anything that looks like a temperature reading on the OPC-UA server, \
-and if so what is its current value?"
-result = agent(question)
+try:
+    result = agent("Is there anything that looks like a temperature reading on the OPC-UA server, \
+    and if so what is its current value?")
+except:
+    print("exception on external access")
